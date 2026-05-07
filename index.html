@@ -8,13 +8,14 @@
   <link rel="stylesheet" href="css/style.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
+  <script>if(location.hash)history.replaceState(null,'',location.pathname+location.search);</script>
 </head>
 <body>
 
   <!-- ===== NAVBAR ===== -->
   <nav class="navbar" id="navbar">
     <div class="nav-container">
-      <a href="#hero" class="nav-logo">
+      <a href="." class="nav-logo" onclick="event.preventDefault();window.scrollTo({top:0,behavior:'smooth'});history.replaceState(null,'',location.pathname);">
         <span class="logo-bracket">&lt;</span>BT<span class="logo-bracket">/&gt;</span>
       </a>
       <ul class="nav-links" id="nav-links">
@@ -154,96 +155,96 @@
 
         <div class="skill-category reveal">
           <h3 class="category-title">
-            <span class="cat-icon">🌐</span> Frontend
+            <span class="cat-icon">🌐</span> Networking
           </h3>
           <div class="skill-items">
             <div class="skill-item">
-              <div class="skill-info"><span>HTML / CSS</span><span>90%</span></div>
-              <div class="skill-bar"><div class="skill-fill" data-width="90"></div></div>
-            </div>
-            <div class="skill-item">
-              <div class="skill-info"><span>JavaScript</span><span>78%</span></div>
-              <div class="skill-bar"><div class="skill-fill" data-width="78"></div></div>
-            </div>
-            <div class="skill-item">
-              <div class="skill-info"><span>React</span><span>65%</span></div>
-              <div class="skill-bar"><div class="skill-fill" data-width="65"></div></div>
-            </div>
-            <div class="skill-item">
-              <div class="skill-info"><span>Tailwind CSS</span><span>80%</span></div>
+              <div class="skill-info"><span>TCP/IP &amp; Subnetting</span><span>80%</span></div>
               <div class="skill-bar"><div class="skill-fill" data-width="80"></div></div>
             </div>
-          </div>
-        </div>
-
-        <div class="skill-category reveal">
-          <h3 class="category-title">
-            <span class="cat-icon">⚙️</span> Backend
-          </h3>
-          <div class="skill-items">
             <div class="skill-item">
-              <div class="skill-info"><span>Python</span><span>75%</span></div>
+              <div class="skill-info"><span>DNS / DHCP / VPN</span><span>75%</span></div>
               <div class="skill-bar"><div class="skill-fill" data-width="75"></div></div>
             </div>
             <div class="skill-item">
-              <div class="skill-info"><span>PHP</span><span>70%</span></div>
+              <div class="skill-info"><span>Firewall &amp; Network Security</span><span>70%</span></div>
               <div class="skill-bar"><div class="skill-fill" data-width="70"></div></div>
             </div>
             <div class="skill-item">
-              <div class="skill-info"><span>Node.js</span><span>60%</span></div>
-              <div class="skill-bar"><div class="skill-fill" data-width="60"></div></div>
-            </div>
-            <div class="skill-item">
-              <div class="skill-info"><span>SQL / MySQL</span><span>72%</span></div>
-              <div class="skill-bar"><div class="skill-fill" data-width="72"></div></div>
+              <div class="skill-info"><span>Wireshark / Packet Analysis</span><span>65%</span></div>
+              <div class="skill-bar"><div class="skill-fill" data-width="65"></div></div>
             </div>
           </div>
         </div>
 
         <div class="skill-category reveal">
           <h3 class="category-title">
-            <span class="cat-icon">🔒</span> Security
+            <span class="cat-icon">🖥️</span> Virtualization
           </h3>
           <div class="skill-items">
             <div class="skill-item">
-              <div class="skill-info"><span>Linux / Kali</span><span>68%</span></div>
+              <div class="skill-info"><span>VMware Workstation / ESXi</span><span>85%</span></div>
+              <div class="skill-bar"><div class="skill-fill" data-width="85"></div></div>
+            </div>
+            <div class="skill-item">
+              <div class="skill-info"><span>Hyper-V</span><span>80%</span></div>
+              <div class="skill-bar"><div class="skill-fill" data-width="80"></div></div>
+            </div>
+            <div class="skill-item">
+              <div class="skill-info"><span>Proxmox</span><span>75%</span></div>
+              <div class="skill-bar"><div class="skill-fill" data-width="75"></div></div>
+            </div>
+            <div class="skill-item">
+              <div class="skill-info"><span>VirtualBox</span><span>78%</span></div>
+              <div class="skill-bar"><div class="skill-fill" data-width="78"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="skill-category reveal">
+          <h3 class="category-title">
+            <span class="cat-icon">💻</span> Operating Systems
+          </h3>
+          <div class="skill-items">
+            <div class="skill-item">
+              <div class="skill-info"><span>Windows Server</span><span>80%</span></div>
+              <div class="skill-bar"><div class="skill-fill" data-width="80"></div></div>
+            </div>
+            <div class="skill-item">
+              <div class="skill-info"><span>Linux (Ubuntu / Debian / CentOS)</span><span>78%</span></div>
+              <div class="skill-bar"><div class="skill-fill" data-width="78"></div></div>
+            </div>
+            <div class="skill-item">
+              <div class="skill-info"><span>Kali Linux</span><span>75%</span></div>
+              <div class="skill-bar"><div class="skill-fill" data-width="75"></div></div>
+            </div>
+            <div class="skill-item">
+              <div class="skill-info"><span>Active Directory</span><span>65%</span></div>
+              <div class="skill-bar"><div class="skill-fill" data-width="65"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="skill-category reveal">
+          <h3 class="category-title">
+            <span class="cat-icon">🛡️</span> Security &amp; Automation
+          </h3>
+          <div class="skill-items">
+            <div class="skill-item">
+              <div class="skill-info"><span>Kali Linux Tools</span><span>72%</span></div>
+              <div class="skill-bar"><div class="skill-fill" data-width="72"></div></div>
+            </div>
+            <div class="skill-item">
+              <div class="skill-info"><span>Python Automation</span><span>70%</span></div>
+              <div class="skill-bar"><div class="skill-fill" data-width="70"></div></div>
+            </div>
+            <div class="skill-item">
+              <div class="skill-info"><span>SQL / MySQL</span><span>68%</span></div>
               <div class="skill-bar"><div class="skill-fill" data-width="68"></div></div>
             </div>
             <div class="skill-item">
-              <div class="skill-info"><span>Network Fundamentals</span><span>65%</span></div>
+              <div class="skill-info"><span>CTF Challenges</span><span>65%</span></div>
               <div class="skill-bar"><div class="skill-fill" data-width="65"></div></div>
-            </div>
-            <div class="skill-item">
-              <div class="skill-info"><span>Burp Suite</span><span>50%</span></div>
-              <div class="skill-bar"><div class="skill-fill" data-width="50"></div></div>
-            </div>
-            <div class="skill-item">
-              <div class="skill-info"><span>OWASP / Web Security</span><span>62%</span></div>
-              <div class="skill-bar"><div class="skill-fill" data-width="62"></div></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="skill-category reveal">
-          <h3 class="category-title">
-            <span class="cat-icon">🛠️</span> Tools
-          </h3>
-          <div class="skill-items">
-            <div class="skill-item">
-              <div class="skill-info"><span>Git / GitHub</span><span>82%</span></div>
-              <div class="skill-bar"><div class="skill-fill" data-width="82"></div></div>
-            </div>
-            <div class="skill-item">
-              <div class="skill-info"><span>Docker</span><span>55%</span></div>
-              <div class="skill-bar"><div class="skill-fill" data-width="55"></div></div>
-            </div>
-            <div class="skill-item">
-              <div class="skill-info"><span>Wireshark</span><span>58%</span></div>
-              <div class="skill-bar"><div class="skill-fill" data-width="58"></div></div>
-            </div>
-            <div class="skill-item">
-              <div class="skill-info"><span>VS Code</span><span>90%</span></div>
-              <div class="skill-bar"><div class="skill-fill" data-width="90"></div></div>
             </div>
           </div>
         </div>
