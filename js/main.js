@@ -4,9 +4,7 @@
 if ('scrollRestoration' in history) {
   history.scrollRestoration = 'manual';
 }
-if (window.location.hash) {
-  history.replaceState(null, '', window.location.pathname + window.location.search);
-}
+history.replaceState(null, '', location.pathname + location.search + '#home');
 window.scrollTo(0, 0);
 
 /* ============================================================
@@ -113,7 +111,9 @@ const revealObserver = new IntersectionObserver((entries) => {
   });
 }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
 
-document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+setTimeout(() => {
+  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+}, 800);
 
 /* ============================================================
    SKILL BAR ANIMATION
@@ -180,6 +180,10 @@ function isValidEmail(email) {
    ============================================================ */
 window.addEventListener('DOMContentLoaded', () => {
   window.scrollTo(0, 0);
+  setTimeout(() => {
+    window.scrollTo(0, 0);
+    history.replaceState(null, '', location.pathname + location.search + '#home');
+  }, 100);
 
   document.querySelectorAll('.hero .reveal').forEach((el, i) => {
     setTimeout(() => el.classList.add('visible'), 200 + i * 120);
