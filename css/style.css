@@ -722,7 +722,8 @@ button { cursor: pointer; font-family: inherit; }
   margin-bottom: 1.25rem;
 }
 
-.project-icon { font-size: 2rem; }
+.project-icon { font-size: 2rem; display: flex; align-items: center; }
+.project-icon img { width: 2rem; height: 2rem; object-fit: contain; }
 
 .project-links {
   display: flex;
