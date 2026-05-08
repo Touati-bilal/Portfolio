@@ -116,22 +116,6 @@ setTimeout(() => {
 }, 800);
 
 /* ============================================================
-   SKILL BAR ANIMATION
-   ============================================================ */
-const barObserver = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.querySelectorAll('.skill-fill').forEach(bar => {
-        bar.style.width = bar.dataset.width + '%';
-      });
-      barObserver.unobserve(entry.target);
-    }
-  });
-}, { threshold: 0.3 });
-
-document.querySelectorAll('.skill-category').forEach(el => barObserver.observe(el));
-
-/* ============================================================
    CONTACT FORM — client-side handling
    ============================================================ */
 const form = document.getElementById('contact-form');
@@ -190,7 +174,67 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
   initTerminal();
+  initProjectsCarousel();
 });
+
+/* ============================================================
+   PROJECTS CAROUSEL (mobile)
+   ============================================================ */
+function initProjectsCarousel() {
+  const grid = document.querySelector('.projects-grid');
+  const cta  = document.querySelector('.projects-cta');
+  if (!grid || !cta) return;
+
+  let dotsContainer = null;
+  let scrollHandler = null;
+
+  function buildCarousel() {
+    if (window.innerWidth > 768) {
+      teardown();
+      return;
+    }
+    if (dotsContainer) return; // already built
+
+    const cards = Array.from(grid.querySelectorAll('.project-card'));
+
+    /* --- dots --- */
+    dotsContainer = document.createElement('div');
+    dotsContainer.className = 'carousel-dots';
+
+    const dots = cards.map((_, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+      btn.setAttribute('aria-label', 'Project ' + (i + 1));
+      btn.addEventListener('click', () => {
+        const cardW = cards[0].offsetWidth + 16; // card width + 1rem gap
+        grid.scrollTo({ left: i * cardW, behavior: 'smooth' });
+      });
+      dotsContainer.appendChild(btn);
+      return btn;
+    });
+
+    cta.parentNode.insertBefore(dotsContainer, cta);
+
+    /* --- scroll → update dots --- */
+    scrollHandler = () => {
+      const cardW = cards[0].offsetWidth + 16;
+      const idx   = Math.min(
+        Math.round(grid.scrollLeft / cardW),
+        dots.length - 1
+      );
+      dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+    };
+    grid.addEventListener('scroll', scrollHandler, { passive: true });
+  }
+
+  function teardown() {
+    if (dotsContainer) { dotsContainer.remove(); dotsContainer = null; }
+    if (scrollHandler)  { grid.removeEventListener('scroll', scrollHandler); scrollHandler = null; }
+  }
+
+  buildCarousel();
+  window.addEventListener('resize', buildCarousel);
+}
 
 /* ============================================================
    CHATBOT TERMINAL
@@ -202,221 +246,313 @@ function initTerminal() {
 
   if (!output || !input) return;
 
-  /* ---- Knowledge base ---- */
+  /* ---- Knowledge base (multilingual rule-based engine) ---- */
   const rules = [
     {
-      keys: ['hello', 'hi', 'hey', 'bonjour', 'salam', 'salut', 'hola', 'bonsoir', 'yo', 'sup'],
+      keys: ['hello','hi','hey','bonjour','salut','bonsoir','salam','ahlan','hola','yo','sup',
+             'مرحبا','السلام عليكم','سلام','صباح الخير','مساء الخير','labas','lbas','wach labas'],
       reply: [
         "Hello! 👋 I'm Bilal's terminal assistant.",
-        "Ask me anything about him — skills, projects, contact, and more."
+        "Ask me anything about him — skills, projects, contact, and more.",
+        "Type 'help' to see all topics."
       ]
     },
     {
-      keys: ['thank', 'thanks', 'merci', 'shukran', 'thx'],
-      reply: ["You're welcome! 😊 Feel free to ask anything else."]
-    },
-    {
-      keys: ['bye', 'goodbye', 'ciao', 'au revoir', 'bslama', 'see you'],
-      reply: ["Goodbye! 👋 Don't forget to check the Projects and Contact sections!"]
-    },
-    {
-      keys: ['who are you', 'what are you', 'introduce yourself'],
-      reply: [
-        "I'm a simple chatbot built into Bilal's portfolio 🤖",
-        "I can answer questions about his skills, projects, background, and more."
-      ]
-    },
-    {
-      keys: ['who is bilal', 'tell me about bilal', 'about bilal', 'bilal touati'],
+      keys: ['who is bilal','tell me about bilal','about bilal','bilal touati','qui est bilal',
+             'présente bilal','من هو بلال','شكون هو بلال','introduce','about you','about him','c\'est qui bilal'],
       reply: [
         "Bilal Touati is a Web Developer & Cybersecurity Student 👤",
-        "Based in Morocco, he builds secure web apps and explores",
-        "ethical hacking, IT infrastructure, and CTF challenges."
+        "Based in Morocco 🇲🇦 — he builds secure web apps and explores",
+        "ethical hacking, IT infrastructure, and CTF challenges.",
+        "Currently specializing in Cybersecurity."
       ]
     },
     {
-      keys: ['python'],
+      keys: ['skill','stack','technology','tools','compétence','outil','مهارة','مهارات','تقنية',
+             'what do you know','what can','capable','tech stack'],
       reply: [
-        "Bilal uses Python 🐍 for:",
-        "  • Automation scripts",
-        "  • Security tooling & exploit development",
-        "  • Backend web development",
-        "  • Data parsing and network tools"
+        "Bilal's core skills 🛠️",
+        "  • Frontend     → HTML, CSS, JavaScript",
+        "  • Backend      → Python, PHP, Node.js",
+        "  • Security     → Kali Linux, Burp Suite, OWASP, Wireshark, Nmap, Metasploit",
+        "  • Infra        → Docker, VMware, Proxmox, Hyper-V, VirtualBox",
+        "  • Networking   → TCP/IP, DNS, DHCP, VPN, VLANs, Subnetting",
+        "  • Tools        → Git, GitHub, VS Code, Linux CLI"
       ]
     },
     {
-      keys: ['linux', 'kali', 'ubuntu', 'debian'],
+      keys: ['web','html','css','javascript','js','frontend','backend','développement web',
+             'développeur','developer','website','site web','coding','programming','تطوير الويب',
+             'برمجة','موقع','node','php'],
       reply: [
-        "Bilal is comfortable with Linux 🐧",
-        "  • Kali Linux    — pentesting & security research",
-        "  • Ubuntu/Debian — servers and dev environments",
-        "  • CentOS        — enterprise infrastructure",
-        "He uses the terminal daily for automation and security work."
+        "Bilal is a Web Developer 💻",
+        "  • Frontend: HTML5, CSS3, JavaScript (ES6+)",
+        "  • Backend:  Python, PHP, Node.js",
+        "  • Tools:    Git, GitHub, VS Code",
+        "He focuses on clean, responsive, and secure web interfaces."
       ]
     },
     {
-      keys: ['network', 'networking', 'tcp', 'ip', 'dns', 'wireshark'],
+      keys: ['cyber','security','ethical','pentest','owasp','burp','hacking','hack','nmap',
+             'wireshark','metasploit','cybersécurité','sécurité','أمن','اختراق','سيبر',
+             'penetration','vulnerability','exploit'],
       reply: [
-        "Bilal has solid networking fundamentals 🌐",
-        "  • TCP/IP, DNS, DHCP, HTTP/S",
-        "  • Network scanning: Nmap & Wireshark",
-        "  • Subnetting and VLANs",
-        "  • Configuring routers and firewalls in lab setups"
+        "Cybersecurity is Bilal's main passion 🔒",
+        "  • Web app testing  — OWASP Top 10, Burp Suite",
+        "  • Network security — Wireshark, Nmap, Metasploit",
+        "  • Ethical hacking  — methodology & lab setups",
+        "  • CTF competitions — HackTheBox, TryHackMe",
+        "  • OS focus         — Kali Linux, Debian, Ubuntu"
       ]
     },
     {
-      keys: ['virtualiz', 'vmware', 'proxmox', 'hyper-v', 'virtualbox', 'esxi'],
-      reply: [
-        "Virtualization is one of Bilal's core strengths 🖥️",
-        "  • VMware Workstation & ESXi",
-        "  • Proxmox VE — home lab & server clustering",
-        "  • Hyper-V     — Windows virtualisation",
-        "  • VirtualBox  — rapid testing environments",
-        "  • Docker      — containerization & deployment"
-      ]
-    },
-    {
-      keys: ['skill', 'stack', 'language', 'technology', 'tools', 'know', 'html', 'css', 'javascript'],
-      reply: [
-        "Bilal's skill set:",
-        "  • Frontend  → HTML, CSS, JavaScript",
-        "  • Backend   → Python, PHP, Node.js",
-        "  • Security  → Kali, Burp Suite, OWASP, Wireshark",
-        "  • Infra     → Docker, VMware, Proxmox, Hyper-V",
-        "  • Tools     → Git, GitHub, VS Code"
-      ]
-    },
-    {
-      keys: ['cyber', 'security', 'ethical', 'pentest', 'owasp', 'burp', 'hacking', 'hack'],
-      reply: [
-        "Cybersecurity is Bilal's main focus 🔒",
-        "  • Web app testing (OWASP Top 10, Burp Suite)",
-        "  • Network security & traffic analysis (Wireshark, Nmap)",
-        "  • Ethical hacking methodology",
-        "  • Active participation in CTF competitions"
-      ]
-    },
-    {
-      keys: ['ctf', 'capture the flag', 'challenge', 'hackthebox', 'tryhackme'],
+      keys: ['ctf','capture the flag','hackthebox','tryhackme','hack the box','challenge','wargame'],
       reply: [
         "Bilal actively practices CTF challenges 🚩",
         "  • Platforms: HackTheBox, TryHackMe",
-        "  • Focus: web exploitation, privilege escalation,",
+        "  • Categories: web exploitation, privilege escalation,",
         "    reverse engineering, network forensics",
-        "  • Goal: sharpen real-world offensive/defensive skills"
+        "  • Goal: sharpen real-world offensive & defensive skills"
       ]
     },
     {
-      keys: ['project', 'built', 'made', 'created', 'work', 'docker', 'container'],
+      keys: ['project','built','made','created','portfolio','projet','مشروع','مشاريع',
+             'lab','labo','réalisation','travail pratique','chi projet'],
       reply: [
-        "Bilal's IT projects 💻",
+        "Bilal's IT projects 💼",
         "  • Docker        — containerized app deployments",
         "  • Hyper-V       — Windows VM infrastructure",
-        "  • VMware / ESXi — enterprise virtualisation lab",
+        "  • VMware / ESXi — enterprise virtualization lab",
         "  • Proxmox VE    — open-source hypervisor cluster",
-        "  • VirtualBox    — multi-OS test environments"
+        "  • VirtualBox    — multi-OS test environments",
+        "  • Network Topo  — Cisco Packet Tracer lab design",
+        "  • Win. Defender — endpoint security configuration",
+        "  • Portfolio     — this website you're on right now!"
       ]
     },
     {
-      keys: ['github', 'repo', 'repository', 'code', 'open source'],
+      keys: ['certif','badge','credly','certification','شهادة','شهادات','diplôme certif',
+             'credential','cisco cert','basis tech'],
+      reply: [
+        "Bilal's certifications 🏅",
+        "  • Data Analytics Essentials     — Cisco",
+        "  • Networking Basics             — Cisco",
+        "  • Cybersecurity                 — Cisco",
+        "  • BDSP Foundations 2.0          — Basis Technologies",
+        "  • Data Essentials               — Basis Technologies",
+        "  • Collaboration & Communication — Basis Technologies",
+        "All verified on Credly — check the Certifications section ↑"
+      ]
+    },
+    {
+      keys: ['education','study','studied','school','degree','diploma','formation','études',
+             'diplôme','تعليم','دراسة','دبلوم','bac+2','technicien spécialisé',
+             'digital infrastructure','infra numérique'],
+      reply: [
+        "Bilal's education 🎓",
+        "  • Diploma: Digital Infrastructure (Technicien Spécialisé)",
+        "  • Currently specializing in Cybersecurity",
+        "  • Self-learning via HackTheBox, TryHackMe & online courses"
+      ]
+    },
+    {
+      keys: ['experience','expérience','خبرة','تجربة','background','career','professional',
+             'work experience','years of','parcours'],
+      reply: [
+        "Bilal's experience 📋",
+        "  • IT infrastructure hands-on (VMware, Proxmox, Hyper-V)",
+        "  • Web development (HTML, CSS, JS, Python)",
+        "  • Network design & config (Cisco Packet Tracer)",
+        "  • Cybersecurity labs & CTF competitions",
+        "  • Self-taught ethical hacking & pentesting",
+        "Open to internships and entry-level cybersecurity roles."
+      ]
+    },
+    {
+      keys: ['language','speak','langue','لغة','لغات','arabic','french','english','darija',
+             'عربي','فرنسي','إنجليزي','دارجة','parle quoi','kin loughat'],
+      reply: [
+        "Languages Bilal speaks 🌍",
+        "  • Arabic (Darija) — native",
+        "  • French          — fluent",
+        "  • English         — professional level"
+      ]
+    },
+    {
+      keys: ['github','repo','repository','open source','git','دي هاب','code source','code github'],
       reply: [
         "Bilal's GitHub 🐙",
         "→ github.com/Touati-bilal",
-        "Find his projects, scripts, and experiments there."
+        "Find his scripts, configs, and lab experiments there."
       ]
     },
     {
-      keys: ['linkedin'],
+      keys: ['linkedin','لينكدإن','réseau professionnel','profil linkedin','network linkedin'],
       reply: [
         "Connect with Bilal on LinkedIn 💼",
         "→ linkedin.com/in/bilal-touati-0884253a2"
       ]
     },
     {
-      keys: ['contact', 'email', 'reach', 'phone', 'hire', 'message', 'available'],
+      keys: ['contact','email','reach','phone','hire','message','joindre','تواصل','بريد',
+             'هاتف','recruiter','recrut','embauche','disponible','chi mail','numéro'],
       reply: [
-        "Reach Bilal here:",
+        "Reach Bilal here 📬",
         "  • Email    → bilal.touati.services@gmail.com",
         "  • Phone    → +212 770 878 144",
         "  • LinkedIn → linkedin.com/in/bilal-touati-0884253a2",
         "  • GitHub   → github.com/Touati-bilal",
         "",
-        "Or scroll down to the Contact section ↓"
+        "Or scroll to the Contact section ↓"
       ]
     },
     {
-      keys: ['location', 'where', 'country', 'from', 'live', 'based', 'morocco'],
+      keys: ['cv','resume','curriculum','vitae','السيرة الذاتية','سيرة','mon cv','son cv'],
+      reply: [
+        "To get Bilal's CV, contact him directly 📄",
+        "  • Email    → bilal.touati.services@gmail.com",
+        "  • LinkedIn → linkedin.com/in/bilal-touati-0884253a2",
+        "He'll be happy to share it with you!"
+      ]
+    },
+    {
+      keys: ['location','where','country','from','live','based','morocco','maroc','المغرب',
+             'فين ساكن','fin kayn','région','ville','city'],
       reply: [
         "Bilal is based in Morocco 🇲🇦",
-        "Open to remote opportunities worldwide."
+        "Open to remote opportunities worldwide 🌍"
       ]
     },
     {
-      keys: ['education', 'study', 'studied', 'school', 'degree', 'diploma', 'digital infrastructure'],
+      keys: ['available','open to work','job','position','role','internship','stage','freelance',
+             'متاح','للتوظيف','recrut','cherche emploi','bghit nkhdm'],
       reply: [
-        "Bilal completed his studies in Digital Infrastructure 🎓",
-        "Currently specializing in Cybersecurity."
+        "Bilal is available for work ✅",
+        "  • Open to internships & entry-level positions",
+        "  • Remote-friendly — worldwide",
+        "  • Focus: Cybersecurity, Web Dev, IT Infrastructure",
+        "  • Email → bilal.touati.services@gmail.com"
       ]
     },
     {
-      keys: ['interest', 'hobby', 'passion', 'like', 'love', 'enjoy'],
+      keys: ['virtualiz','vmware','proxmox','hyper-v','virtualbox','esxi','docker','container',
+             'machine virtuelle','vm ','hypervisor'],
+      reply: [
+        "Virtualization — one of Bilal's core strengths 🖥️",
+        "  • VMware Workstation & ESXi — enterprise hypervisor",
+        "  • Proxmox VE               — open-source cluster",
+        "  • Hyper-V                  — Windows virtualization",
+        "  • VirtualBox               — test environments",
+        "  • Docker                   — containerized apps"
+      ]
+    },
+    {
+      keys: ['network','networking','tcp','dns','dhcp','vlan','subnet','routing','cisco',
+             'réseau','شبكة','شبكات','packet tracer','firewall','vpn','switching'],
+      reply: [
+        "Bilal's networking skills 🌐",
+        "  • TCP/IP, DNS, DHCP, HTTP/S, VPN",
+        "  • Subnetting and VLANs",
+        "  • Cisco Packet Tracer — topology design",
+        "  • Wireshark & Nmap   — traffic analysis & scanning",
+        "  • Firewall configuration and network security"
+      ]
+    },
+    {
+      keys: ['python','script','automation','automatisation','أتمتة','سكريبت'],
+      reply: [
+        "Bilal uses Python 🐍 for:",
+        "  • Automation scripts",
+        "  • Security tools & exploits",
+        "  • Backend web development",
+        "  • Network scanning & data parsing"
+      ]
+    },
+    {
+      keys: ['linux','ubuntu','debian','centos','bash','terminal','command line','kali',
+             'shell','تيرمينال'],
+      reply: [
+        "Bilal is very comfortable with Linux 🐧",
+        "  • Kali Linux    — pentesting & security research",
+        "  • Ubuntu/Debian — servers & dev environments",
+        "  • CentOS        — enterprise infrastructure",
+        "  • Daily terminal use for automation & security"
+      ]
+    },
+    {
+      keys: ['interest','hobby','passion','like','love','enjoy','loisir','اهتمام','هواية',
+             'shi hobby','mzyan'],
       reply: [
         "Bilal is passionate about 🚀",
         "  • Cybersecurity & Ethical Hacking",
-        "  • CTF Challenges",
-        "  • Virtualization & Infrastructure",
-        "  • Open-source contributions"
+        "  • CTF Competitions",
+        "  • Virtualization & Lab Infrastructure",
+        "  • Web Development",
+        "  • Continuous self-learning"
       ]
     },
     {
-      keys: ['job', 'role', 'position', 'title', 'developer', 'student', 'career'],
+      keys: ['who are you','what are you','bot','robot','chatbot','artificial','من أنت',
+             'شكون نت','c\'est quoi','t\'es quoi','les chkoun'],
       reply: [
-        "Bilal is a Web Developer & Cybersecurity Student 🎯",
-        "He builds clean, responsive web interfaces while focusing on",
-        "secure development practices and IT infrastructure."
+        "I'm a rule-based terminal assistant built into Bilal's portfolio 🤖",
+        "No AI or API — just smart keyword matching!",
+        "Type 'help' to see all topics."
       ]
     },
     {
-      keys: ['help', 'what can', 'topics', 'commands', 'ask', 'menu'],
+      keys: ['help','what can','topics','commands','menu','aide','مساعدة','عاون','chi haja',
+             'ash kayndir','ashno tdir'],
       reply: [
-        "Topics you can ask about:",
-        "  • skills / html / css / javascript / python",
-        "  • linux / networking / virtualization",
-        "  • cybersecurity / ctf",
-        "  • projects / github / linkedin",
-        "  • contact / location / education",
+        "Here's what you can ask me about:",
+        "  • skills / web dev / python / linux",
+        "  • cybersecurity / ctf / networking / virtualization",
+        "  • projects / certifications / education / experience",
+        "  • languages / location / availability",
+        "  • github / linkedin / contact / cv",
         "",
-        "Just type naturally — I'll do my best! 🤖"
+        "Ask in English, French, Arabic, or Darija 🌍"
       ]
+    },
+    {
+      keys: ['thank','thanks','merci','شكرا','شكراً','يعطيك الصحة','barak allaho fik',
+             'thx','ty','شكراً جزيلاً','merci beaucoup'],
+      reply: ["You're welcome! 😊 Feel free to ask anything else about Bilal."]
+    },
+    {
+      keys: ['bye','goodbye','ciao','au revoir','bslama','see you','مع السلامة','بسلامة',
+             'وداعاً','a bientôt'],
+      reply: ["Goodbye! 👋 Don't forget to check the Projects and Contact sections!"]
     }
   ];
 
-  /* ---- Reply matcher with error counter ---- */
-  let errorCount = 0;
+  /* ---- Reply matcher ---- */
+  let missCount = 0;
 
   function getReply(msg) {
     const lower = msg.toLowerCase();
     for (const rule of rules) {
       if (rule.keys.some(k => lower.includes(k))) {
-        errorCount = 0;
+        missCount = 0;
         return rule.reply;
       }
     }
-    errorCount++;
-    if (errorCount >= 3) {
-      errorCount = 0;
+    missCount++;
+    const fallback = [
+      "Hmm, I'm not sure about that yet 🤔",
+      "But I can tell you about Bilal's skills, projects,",
+      "education, or how to contact him."
+    ];
+    if (missCount >= 3) {
+      missCount = 0;
       return [
-        "Hmm, I'm not sure about that yet 🤔",
-        "But I can tell you about Bilal's skills, projects, or how to contact him.",
+        ...fallback,
         "",
-        "Try asking about: skills, projects, contact, GitHub, LinkedIn,",
-        "Linux, networking, virtualization, Python, cybersecurity."
+        "Try: skills, projects, cybersecurity, contact, GitHub,",
+        "education, certifications, languages, cv, or 'help'."
       ];
     }
-    return [
-      "Hmm, I'm not sure about that yet 🤔",
-      "But I can tell you about Bilal's skills, projects, or how to contact him."
-    ];
+    return fallback;
   }
 
   /* ---- DOM helpers ---- */
@@ -464,7 +600,6 @@ function initTerminal() {
         addSpacer();
         scrollBottom();
         input.disabled = false;
-        input.focus();
         return;
       }
 
@@ -517,7 +652,7 @@ function initTerminal() {
     setTimeout(() => {
       removeTypingDots();
       typeLines(reply);
-    }, 500 + Math.random() * 300);
+    }, 400 + Math.random() * 300);
   }
 
   /* ---- Input events ---- */
@@ -538,9 +673,19 @@ function initTerminal() {
   /* ---- Boot message ---- */
   setTimeout(() => {
     typeLines([
-      "Hi there! 👋 I'm Bilal's assistant.",
-      "Ask me anything — skills, projects, contact, and more.",
-      "Type 'help' to see all topics."
+      "Hi! I'm Bilal's assistant 🤖",
+      "You can ask me about:",
+      "  • skills          — tech stack & tools",
+      "  • projects        — IT labs & builds",
+      "  • cybersecurity   — hacking, CTF, tools",
+      "  • education       — diploma & training",
+      "  • experience      — background & career",
+      "  • certifications  — Cisco, Basis Technologies",
+      "  • languages       — EN / FR / AR / Darija",
+      "  • contact         — email, phone, LinkedIn",
+      "  • cv              — how to get his resume",
+      "",
+      "Or just type any question about Bilal 👇"
     ]);
   }, 500);
 }
